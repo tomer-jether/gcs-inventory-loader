@@ -108,7 +108,7 @@ def bucket_lister(config: ConfigParser, gcs: Client, bucket: Bucket,
     size = int(config.getint('RUNTIME', 'WORK_QUEUE_SIZE') * .75)
     with BoundedThreadPoolExecutor(max_workers=workers,
                                    queue_size=size) as sub_executor:
-        blobs = gcs.list_blobs(bucket, prefix=prefix, projection=projection)
+        blobs = gcs.list_blobs(bucket, prefix=prefix, projection=projection, versions=True)
         for page in blobs.pages:
             sub_executor.submit(page_outputter, config, bucket, page, stats)
             sleep(0.02)  # small offset to avoid thundering herd
